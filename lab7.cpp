@@ -9,101 +9,66 @@ private:
     int passengerId;
 
 public:
-    Person(); // Default constructor
-    Person(string, string, int); // Parameterized constructor
+    Person();
+    Person(string, string, int);
+    ~Person();
 
-    string getName() const { return name; }
-    string getLastName() const { return lastname; }
-    int getPassengerId() const { return passengerId; }
+    string getName() const {
+        return name;
+    }
+
+    string getLastName() const {
+        return lastname;
+    }
+
+    int getPassengerId() const {
+        return passengerId;
+    }
 
     void display() const {
         cout << "Name: " << name << ", Last Name: " << lastname << ", ID: " << passengerId << endl;
     }
 };
 
-// Implementation of Person constructors
+
 Person::Person() : name("Unknown"), lastname("Unknown"), passengerId(-1) {
-    cout << "Default Constructor - Person" << endl;
+    cout << "Default constructor: Person." << endl;
 }
 
-Person::Person(string n, string ln, int id) : name(n), lastname(ln), passengerId(id) {}
-
-// Vehicle class
-class Vehicle {
-protected:
-    string color;
-    double price;
-    int model_year;
-
-public:
-    Vehicle(); // Default constructor
-    Vehicle(string, int, double); // Parameterized constructor
-    ~Vehicle() { cout << "Destructor - Vehicle" << endl; }
-
-    virtual void getInfo() const;
-};
-
-// Implementation of Vehicle constructors
-Vehicle::Vehicle() : color("White"), price(0.0), model_year(0) {
-    cout << "Default Constructor - Vehicle" << endl;
+Person::Person(string n, string ln, int id) : name(n), lastname(ln), passengerId(id) {
+    cout << "Parameterized constructor: Person." << endl;
 }
 
-Vehicle::Vehicle(string c, int year, double p) : color(c), model_year(year), price(p) {}
-
-void Vehicle::getInfo() const {
-    cout << "Color: " << color << ", Year: " << model_year << ", Price: $" << price << endl;
+Person::~Person() {
+    cout << "Destructor called for Person: " << name << " " << lastname << endl;
 }
 
-// Subway class
-class Subway : public Vehicle {
-protected:
-    string lineName;
-    int numberofCars;
 
-public:
-    Subway(); // Default constructor
-    Subway(string, int, double, string, int); // Parameterized constructor
-    ~Subway() { cout << "Destructor - Subway" << endl; }
-
-    void getInfo() const override;
-};
-
-// Implementation of Subway constructors
-Subway::Subway() : Vehicle(), lineName("Unknown"), numberofCars(0) {
-    cout << "Default Constructor - Subway" << endl;
-}
-
-Subway::Subway(string c, int year, double p, string line, int cars)
-    : Vehicle(c, year, p), lineName(line), numberofCars(cars) {}
-
-void Subway::getInfo() const {
-    Vehicle::getInfo();
-    cout << "Line Name: " << lineName << ", Number of Cars: " << numberofCars << endl;
-}
-
-// PassengerTrain class
-class PassengerTrain : public Vehicle {
+class PassengerTrain {
 private:
     int currentPassengerCount;
     Person passengers[10];
 
 public:
-    PassengerTrain(); // Default constructor
-    PassengerTrain(string, double, int); // Parameterized constructor
+    PassengerTrain();
+    ~PassengerTrain();
 
-    bool isFull() const { return currentPassengerCount >= 10; }
+    bool isFull() const{
+        return currentPassengerCount >= 10;
+    }
+
     void boardPassenger(const Person&);
     void disembarkPassenger(int);
     void displayPassengers() const;
 };
 
-// Implementation of PassengerTrain constructors
-PassengerTrain::PassengerTrain() : Vehicle(), currentPassengerCount(0) {
-    cout << "Default Constructor - PassengerTrain" << endl;
+PassengerTrain::PassengerTrain() : currentPassengerCount(0) {
+    cout << "Default constructor: PassengerTrain." << endl;
 }
 
-PassengerTrain::PassengerTrain(string c, double p, int year)
-    : Vehicle(c, year, p), currentPassengerCount(0) {}
+PassengerTrain::~PassengerTrain() {
+    cout << "Destructor: PassengerTrain." << endl;
+}
 
 void PassengerTrain::boardPassenger(const Person& p) {
     if (!isFull()) {
@@ -130,27 +95,36 @@ void PassengerTrain::disembarkPassenger(int id) {
 }
 
 void PassengerTrain::displayPassengers() const {
+    if (currentPassengerCount == 0) {
+        cout << "No passengers on board." << endl;
+        return;
+    }
+
     cout << "Current Passengers:" << endl;
     for (int i = 0; i < currentPassengerCount; ++i) {
         passengers[i].display();
     }
 }
 
-// Main Function
+
 int main() {
     PassengerTrain train;
-    Person p1("John", "Doe", 1), p2("Jane", "Smith", 2);
     int option, passengerId;
+    string name, lastname;
 
     do {
-        cout << "1) Board the train\n2) Exit the train\n3) Display Passengers\n4) Display Train Info\n5) Exit the app\nOption: ";
+        cout << "1) Board the train\n2) Exit the train\n3) Display Passengers\n4) Exit the app\nOption: ";
         cin >> option;
 
         switch (option) {
         case 1:
+            cout << "Enter your name: ";
+            cin >> name;
+            cout << "Enter your last name: ";
+            cin >> lastname;
             cout << "Enter your passenger ID: ";
             cin >> passengerId;
-            train.boardPassenger(Person("Passenger", "X", passengerId));
+            train.boardPassenger(Person(name, lastname, passengerId));
             break;
         case 2:
             cout << "Enter your passenger ID to exit the train: ";
@@ -161,15 +135,12 @@ int main() {
             train.displayPassengers();
             break;
         case 4:
-            train.getInfo();
-            break;
-        case 5:
             cout << "Exiting the application." << endl;
             break;
         default:
             cout << "Invalid option. Try again." << endl;
         }
-    } while (option != 5);
+    } while (option != 4);
 
     return 0;
 }
